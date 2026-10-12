@@ -1,67 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 function Home() {
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [date, setDate] = useState("");
-  const [passengers, setPassengers] = useState(1);
+  const [buses, setBuses] = useState([]);
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    navigate("/results", { state: { from, to, date, passengers } });
-  };
+  useEffect(() => {
+    const fetchBuses = async () => {
+      try {
+        const res = await api.get("/buses");
+        setBuses(res.data);
+      } catch (err) {
+        console.error("Error fetching buses:", err);
+      }
+    };
+    fetchBuses();
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-sky-600 mb-4">
-          Book Bus Tickets Easily
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-4xl border-t-4 border-sky-600">
+        <h1 className="text-3xl font-bold text-sky-600 mb-8 text-center">
+          Available Buses
         </h1>
-        <p className="text-gray-700 text-lg">
-          Fast, reliable, and secure — just like RedBus
-        </p>
-      </div>
 
-      <form
-        onSubmit={handleSearch}
-        className="bg-white shadow-xl rounded-lg p-8 w-full max-w-3xl flex flex-wrap gap-4 justify-center border-t-4 border-sky-600"
-      >
-        <input
-          type="text"
-          placeholder="From"
-          value={from}
-          onChange={(e) => setFrom(e.target.value)}
-          className="flex-1 min-w-37.5 p-3 border rounded focus:outline-none focus:ring-2 focus:ring-sky-500"
-        />
-        <input
-          type="text"
-          placeholder="To"
-          value={to}
-          onChange={(e) => setTo(e.target.value)}
-          className="flex-1 min-w-37.5 p-3 border rounded focus:outline-none focus:ring-2 focus:ring-sky-500"
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="flex-1 min-w-37.5 p-3 border rounded focus:outline-none focus:ring-2 focus:ring-sky-500"
-        />
-        <input
-          type="number"
-          min="1"
-          value={passengers}
-          onChange={(e) => setPassengers(e.target.value)}
-          className="flex-1 min-w-25 p-3 border rounded focus:outline-none focus:ring-2 focus:ring-sky-500"
-        />
-        <button
-          type="submit"
-          className="bg-sky-600 text-white px-6 py-3 rounded font-semibold hover:bg-sky-700 transition"
-        >
-          Search Buses
-        </button>
-      </form>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
+          {buses.map((bus) => (
+            <div
+              key={bus._id}
+              className="bg-gray-100   rounded-lg p-6 shadow-xl shadow-sky-200 hover:shadow-lg cursor-pointer transition"
+              onClick={() => navigate(`/bus/${bus._id}`)}
+            >
+              <h3 className="text-xl font-semibold text-sky-600 mb-2">
+                {bus.busName}
+              </h3>
+              <p className="text-gray-700">{bus.busType}</p>
+              <p className="text-gray-700">
+                {bus.departure} → {bus.arrival}
+              </p>
+              <p className="text-gray-700">₹{bus.pricePerSeat} per seat</p>
+              <p className="text-gray-700">
+                Seats Available: {bus.availableSeats}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

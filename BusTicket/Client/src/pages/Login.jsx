@@ -11,18 +11,22 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.post("/users/login", { email, password });
-      dispatch(setToken(res.data.token));
-      localStorage.setItem("token", res.data.token);
-      setMessage("✅ Login successful! Redirecting...");
-      setTimeout(() => navigate("/book"), 1500);
-    } catch (err) {
-      setMessage(err.response?.data?.error || "❌ Login failed");
-    }
-  };
+ const handleSubmit = async (e) => {
+   e.preventDefault();
+   try {
+     const res = await api.post("/users/login", { email, password });
+
+     dispatch(setToken(res.data.token));
+     localStorage.setItem("token", res.data.token);
+     localStorage.setItem("userId", res.data.user._id);
+
+     setMessage("✅ Login successful! Redirecting...");
+     setTimeout(() => navigate("/"), 1500);
+   } catch (err) {
+     setMessage(err.response?.data?.error || "❌ Login failed");
+   }
+ };
+
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">

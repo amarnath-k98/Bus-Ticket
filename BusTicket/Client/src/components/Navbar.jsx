@@ -10,12 +10,19 @@ function Navbar() {
   const handleLogout = () => {
     dispatch(clearToken());
     localStorage.removeItem("token");
+    localStorage.removeItem("userId"); 
     navigate("/login");
   };
 
   return (
     <nav className="bg-sky-600 text-white px-8 py-4 flex justify-between items-center shadow-md">
-      <h1 className="text-2xl font-bold tracking-wide">Bus Ticket</h1>
+      {/* ✅ Clicking Bus Ticket now navigates to Home */}
+      <Link
+        to="/"
+        className="text-2xl font-bold tracking-wide hover:text-sky-200"
+      >
+        Bus Ticket
+      </Link>
 
       <div className="space-x-6 flex items-center">
         {!token ? (
@@ -36,16 +43,16 @@ function Navbar() {
         ) : (
           <>
             <Link
-              to="/book"
+              to="/my-bookings"
               className="hover:text-sky-200 transition font-medium"
             >
-              Book
+              My Bookings
             </Link>
             <Link
-              to="/cancel"
+              to="/canceled"
               className="hover:text-sky-200 transition font-medium"
             >
-              Cancel
+              Canceled
             </Link>
             <button
               onClick={handleLogout}

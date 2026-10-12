@@ -1,20 +1,30 @@
+import { useParams } from "react-router-dom";
 import { useState } from "react";
 import api from "../services/api";
 
 function BookTicket() {
-  const [busId, setBusId] = useState("");
+  const { busId } = useParams(); 
   const [seatsBooked, setSeatsBooked] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const userId = "123";
-      const res = await api.post("/bookings", {
-        userId,
-        busId,
-        seatsBooked,
-      });
+      const userId = localStorage.getItem("userId"); 
+      const token = localStorage.getItem("token");
+
+      const res = await api.post(
+        "/bookings",
+        {
+          userId,
+          busId,
+          seatsBooked: Number(seatsBooked),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
       setMessage(`✅ Booking confirmed! ID: ${res.data._id}`);
     } catch (err) {
       setMessage(err.response?.data?.error || "❌ Booking failed");
@@ -30,14 +40,6 @@ function BookTicket() {
         <h2 className="text-3xl font-bold text-sky-600 mb-6 text-center">
           Book Your Ticket
         </h2>
-
-        <input
-          type="text"
-          placeholder="Enter Bus ID"
-          value={busId}
-          onChange={(e) => setBusId(e.target.value)}
-          className="w-full p-3 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-sky-500"
-        />
 
         <input
           type="number"

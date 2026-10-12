@@ -11,15 +11,26 @@ export const addBus = async (req, res) => {
 
 export const getBuses = async (req, res) => {
   try {
-    const { source, destination } = req.query;
-    const buses = await Bus.find().populate("route");
+    const { departure, arrival } = req.query;
 
-    const filtered = buses.filter(
-      (bus) =>
-        bus.route.source === source && bus.route.destination === destination,
-    );
+    let query = {};
+    if (departure) query.departure = departure;
+    if (arrival) query.arrival = arrival;
 
-    res.json(filtered);
+    const buses = await Bus.find(query);
+
+    res.json(buses);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+export const getBusById = async (req, res) => {
+  try {
+    const bus = await Bus.findById(req.params.id);
+    if (!bus) return res.status(404).json({ error: "Bus not found" });
+    res.json(bus);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

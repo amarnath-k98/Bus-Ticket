@@ -3,10 +3,11 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import BookTicket from "./pages/BookTicket";
-import CancelBooking from "./pages/CancelBooking";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BusResults from "./pages/BusResults";
+import BusDetails from "./pages/BusDetails";
+import CanceledBookings from "./pages/CanceledBooking";
+import MyBookings from "./pages/MyBookings";
 
 function App() {
   return (
@@ -17,33 +18,38 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/results" element={<BusResults />} />
-
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
             <Route
-              path="/book"
+              path="/bus/:busId"
               element={
                 <ProtectedRoute>
-                  <BookTicket />
+                  <BusDetails />
                 </ProtectedRoute>
               }
             />
             <Route
-              path="/cancel"
+              path="/my-bookings"
               element={
                 <ProtectedRoute>
-                  <CancelBooking />
+                  <MyBookings />
                 </ProtectedRoute>
               }
             />
-
+            <Route
+              path="/canceled"
+              element={
+                <ProtectedRoute>
+                  <CanceledBookings />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </main>
 
-      {/* ✅ Footer updated to sky blue */}
       <footer className="bg-sky-600 text-white text-center py-4">
         <p className="text-sm">
           © {new Date().getFullYear()} Bus Ticket — Bus Ticket Booking System
