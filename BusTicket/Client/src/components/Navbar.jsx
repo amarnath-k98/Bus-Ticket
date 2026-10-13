@@ -16,7 +16,6 @@ function Navbar() {
 
   return (
     <nav className="bg-sky-600 text-white px-8 py-4 flex justify-between items-center shadow-md">
-      {/* ✅ Clicking Bus Ticket now navigates to Home */}
       <Link
         to="/"
         className="text-2xl font-bold tracking-wide hover:text-sky-200"
